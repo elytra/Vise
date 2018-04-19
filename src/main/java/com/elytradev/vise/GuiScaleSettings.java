@@ -67,9 +67,9 @@ public class GuiScaleSettings extends GuiScreen {
 	public void initGui() {
 		buttonList.clear();
 		buttonList.add(new GuiButton(200, width / 2 - 100, height - 27, I18n.format("gui.done")));
-		buttonList.add(guiScale = new GuiSliderGUI(1, (width / 2) - 100, 40, 200, 20, "GUI Scale: ", "x", 0, 16, mc.gameSettings.guiScale, false, true));
-		buttonList.add(hudScale = new GuiSliderAuto(2, (width / 2) - 100, 65, 98, 20, "HUD Scale: ", "x", 0, 16, Vise.hudScale, false, true));
-		buttonList.add(tooltipScale = new GuiSliderAuto(3, (width / 2) + 2, 65, 98, 20, "Tooltip Scale: ", "x", 0, 16, Vise.tooltipScale, false, true));
+		buttonList.add(guiScale = new GuiSliderGUI(1, (width / 2) - 100, 40, 200, 20, I18n.format("options.guiScale")+": ", "x", 0, 16, mc.gameSettings.guiScale, false, true));
+		buttonList.add(hudScale = new GuiSliderAuto(2, (width / 2) - 100, 65, 98, 20, I18n.format("options.vise.hudScale")+": ", "x", 0, 16, Vise.hudScale, false, true));
+		buttonList.add(tooltipScale = new GuiSliderAuto(3, (width / 2) + 2, 65, 98, 20, I18n.format("options.vise.tooltipScale")+": ", "x", 0, 16, Vise.tooltipScale, false, true));
 		guiScale.updateSlider();
 		hudScale.updateSlider();
 		tooltipScale.updateSlider();
