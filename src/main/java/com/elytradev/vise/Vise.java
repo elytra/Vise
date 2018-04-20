@@ -9,8 +9,10 @@ import org.apache.logging.log4j.Logger;
 import com.elytradev.concrete.reflect.accessor.Accessor;
 import com.elytradev.concrete.reflect.accessor.Accessors;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiChat;
+import net.minecraft.client.gui.GuiErrorScreen;
 import net.minecraft.client.gui.GuiOptionButton;
 import net.minecraft.client.gui.GuiOptionsRowList;
 import net.minecraft.client.gui.GuiVideoSettings;
@@ -24,6 +26,8 @@ import net.minecraftforge.client.event.RenderTooltipEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.fml.client.CustomModLoadingErrorDisplayException;
+import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
@@ -38,10 +42,10 @@ public class Vise {
 	@Instance
 	public static Vise inst;
 	
-	private final Accessor<GuiOptionsRowList> optionsRowList = Accessors.findField(GuiVideoSettings.class, "field_146501_h", "optionsRowList");
-	private final Accessor<List<GuiOptionsRowList.Row>> options = Accessors.findField(GuiOptionsRowList.class, "field_148184_k", "options");
-	private final Accessor<GuiButton> buttonA = Accessors.findField(GuiOptionsRowList.Row.class, "field_148323_b", "buttonA");
-	private final Accessor<GuiButton> buttonB = Accessors.findField(GuiOptionsRowList.Row.class, "field_148324_c", "buttonB");
+	private Accessor<GuiOptionsRowList> optionsRowList;
+	private Accessor<List<GuiOptionsRowList.Row>> options;
+	private Accessor<GuiButton> buttonA;
+	private Accessor<GuiButton> buttonB;
 	
 	private boolean ingameRenderTakenOver = false;
 	private boolean chatRenderTakenOver = false;
@@ -53,6 +57,31 @@ public class Vise {
 	
 	@EventHandler
 	public void onPreInit(FMLPreInitializationEvent e) {
+		if (FMLClientHandler.instance().hasOptifine()) {
+			throw new CustomModLoadingErrorDisplayException() {
+				private static final long serialVersionUID = -5594771715890309959L;
+
+				@Override
+				public void initGui(GuiErrorScreen errorScreen, FontRenderer fontRenderer) {
+					
+				}
+				
+				@Override
+				public void drawScreen(GuiErrorScreen errorScreen, FontRenderer fontRenderer, int mouseRelX, int mouseRelY, float tickTime) {
+					errorScreen.drawCenteredString(fontRenderer, "\u00A7lVise is not compatible with OptiFine.", errorScreen.width/2, 75, -1);
+					errorScreen.drawCenteredString(fontRenderer, "Please remove Vise or OptiFine.", errorScreen.width/2, 90, -1);
+				}
+			};
+		}
+		// For some asinine reason, OptiFine ASMs GuiVideoSettings instead of
+		// just replacing it at runtime, so we have to make sure not to reflect
+		// into these fields if OptiFine is present, as the fields won't exist
+		// in the presence of OptiFine.
+		optionsRowList = Accessors.findField(GuiVideoSettings.class, "field_146501_h", "optionsRowList");
+		options = Accessors.findField(GuiOptionsRowList.class, "field_148184_k", "options");
+		buttonA = Accessors.findField(GuiOptionsRowList.Row.class, "field_148323_b", "buttonA");
+		buttonB = Accessors.findField(GuiOptionsRowList.Row.class, "field_148324_c", "buttonB");
+		
 		cfg = new Configuration(e.getSuggestedConfigurationFile());
 		if (cfg.hasKey("scale", "hud")) {
 			hudScale = cfg.getInt("hud", "scale", 0, 0, 16, "");
