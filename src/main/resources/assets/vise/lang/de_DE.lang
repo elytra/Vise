@@ -1,0 +1,7 @@
+options.vise.scale=Größeneinstellungen...
+options.vise.scaleTitle=Größeneinstellungen
+options.vise.dirty=Änderungen werden nach einem Klick auf Fertig angewandt
+options.vise.tooBig=Das Fenster ist nur groß genug für die %s-fache Skalierung
+
+options.vise.hudScale=HUD-Größe
+options.vise.tooltipScale=Kurzinfo-Größe
