@@ -4,4 +4,4 @@ options.vise.dirty=Changes will be applied when you click Done
 options.vise.tooBig=The window is only large enough for %sx scale
 
 options.vise.hudScale=HUD Scale
-options.vise.tooltipScale=Tooltip Scale  
+options.vise.tooltipScale=Tooltip Scale
